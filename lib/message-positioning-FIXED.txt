@@ -1,0 +1,39 @@
+COLLISION DETECTION FIX:
+
+In the positionMessages function in /lib/message-positioning.ts:
+
+1. Add new parameter: existingMessages?: PlacedMessage[]
+
+2. At the start of the function, before sorting messages, add:
+
+```typescript
+// CRITICAL: Add existing visible messages to collision detection
+// This prevents new messages from overlapping old messages that are still fading out
+if (existingMessages) {
+  for (const existing of existingMessages) {
+    if (existing.opacity > 0.01) {  // Only check against visible messages
+      placedBoxes.push({
+        left: existing.messageX,
+        top: existing.messageY,
+        right: existing.messageX + existing.width,
+        bottom: existing.messageY + existing.height
+      })
+    }
+  }
+}
+```
+
+3. In /app/installation/page.tsx, update the call:
+
+```typescript
+positionedMessages = positionMessages(
+  messagesToPlace,
+  particleInfoMap,
+  connectionInfos,
+  p.width,
+  p.height,
+  (p as any)._cachedPositions || []  // Pass existing messages for collision detection
+)
+```
+
+This ensures new messages check collisions against ALL currently visible messages, including ones fading out from previous clusters.

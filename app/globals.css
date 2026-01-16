@@ -1,0 +1,240 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: theme('colors.stone.50');
+    --foreground: theme('colors.stone.900');
+    --muted: theme('colors.stone.500');
+    --border: theme('colors.stone.200');
+    --accent: theme('colors.sky.600');
+  }
+
+  /* iOS viewport height fix - handles Safari address bar */
+  @supports (height: 100dvh) {
+    .min-h-screen {
+      min-height: 100dvh;
+    }
+    
+    /* iOS-safe viewport height for hero sections */
+    .min-h-\[80vh\] {
+      min-height: 80dvh;
+    }
+  }
+
+  html {
+    @apply antialiased;
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-900;
+    @apply font-light;
+  }
+
+  /* Ensure smooth font rendering */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .transition-elegant {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+
+  .transition-smooth {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hero fade in animation */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.8s ease-out;
+  }
+
+  /* Mobile menu slide in animation */
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+}
+
+@layer components {
+  /* Navigation link style */
+  .nav-link {
+    @apply text-base font-normal text-stone-600;
+    @apply hover:text-stone-900;
+    @apply transition-all duration-200 ease-out;
+    @apply relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease-out;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* Logo style */
+  .nav-logo {
+    @apply text-2xl md:text-3xl font-light tracking-tight;
+    @apply text-stone-900 hover:text-sky-700;
+    @apply transition-smooth;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply px-10 md:px-12 py-3 md:py-4;
+    @apply bg-stone-800 hover:bg-stone-900;
+    @apply border border-transparent;
+    @apply text-stone-50 text-sm md:text-base;
+    @apply font-normal tracking-wide uppercase;
+    @apply transition-all duration-300 ease-out;
+    @apply focus:ring-2 focus:ring-stone-600 focus:ring-opacity-50;
+    @apply hover:scale-[1.02] hover:shadow-lg;
+    @apply inline-block text-center;
+    @apply relative overflow-hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease-out, height 0.6s ease-out;
+  }
+
+  .btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply px-10 md:px-12 py-3 md:py-4;
+    @apply border border-stone-300 hover:border-stone-900;
+    @apply text-stone-700 hover:text-stone-900;
+    @apply text-sm md:text-base;
+    @apply font-normal tracking-wide uppercase;
+    @apply transition-all duration-300 ease-out;
+    @apply focus:ring-2 focus:ring-stone-500 focus:ring-opacity-50;
+    @apply inline-block text-center;
+    @apply hover:shadow-md;
+    @apply bg-transparent hover:bg-stone-50;
+  }
+
+  /* Page section */
+  .page-section {
+    @apply py-24 md:py-32 px-6 md:px-12;
+    @apply max-w-6xl mx-auto;
+  }
+
+  /* Hero section */
+  .hero-section {
+    @apply py-32 md:py-40 px-6 md:px-12;
+  }
+
+  /* Artist profile links - elegant, subtle styling */
+  .artist-profiles a {
+    @apply text-stone-600 hover:text-stone-900;
+    @apply font-normal;
+    @apply transition-all duration-200;
+    @apply inline-block;
+    @apply relative;
+    text-decoration: none;
+    padding-left: 1.2em;
+  }
+
+  /* Arrow/chevron before link */
+  .artist-profiles a::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    @apply text-stone-400;
+    transition: all 0.2s ease-out;
+  }
+
+  /* Subtle underline on hover */
+  .artist-profiles a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1.2em;
+    right: 0;
+    height: 1px;
+    @apply bg-stone-300;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease-out;
+  }
+
+  .artist-profiles a:hover::before {
+    @apply text-stone-900;
+    transform: translateX(3px);
+  }
+
+  .artist-profiles a:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Ensure links display as block for line breaks */
+  .artist-profiles p a {
+    display: inline-block;
+    margin: 0.25rem 0;
+  }
+}
+
+/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

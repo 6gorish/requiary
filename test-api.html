@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House of Mourning - API Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #8b7355;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        
+        .section {
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        h2 {
+            color: #a89080;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        button {
+            background: #8b7355;
+            color: #0a0a0f;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #a89080;
+        }
+        
+        button:disabled {
+            background: #4a4a5a;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            background: #0f0f14;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .message-card {
+            background: #1a1a24;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .message-content {
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-meta {
+            color: #8a8a9a;
+            font-size: 0.875rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #1a4d1a;
+            color: #66ff66;
+        }
+        
+        .status.error {
+            background: #4d1a1a;
+            color: #ff6666;
+        }
+        
+        .status.info {
+            background: #1a2a4d;
+            color: #66aaff;
+        }
+        
+        .pagination-info {
+            background: #1a1a24;
+            border-left: 3px solid #8b7355;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        input[type="number"],
+        textarea {
+            width: 100%;
+            background: #0f0f14;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            padding: 0.75rem;
+            color: #e0e0e0;
+            margin-bottom: 1rem;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        label {
+            display: block;
+            color: #a89080;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .char-count {
+            color: #8a8a9a;
+            font-size: 0.875rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕊️ House of Mourning - API Test Suite</h1>
+        
+        <!-- Server Status -->
+        <div class="section">
+            <h2>Server Status</h2>
+            <button onclick="checkServer()">Check Server</button>
+            <div id="server-status"></div>
+        </div>
+        
+        <!-- Test 1: Fetch First Page -->
+        <div class="section">
+            <h2>Test 1: Fetch Messages</h2>
+            <p style="margin-bottom: 1rem; color: #8a8a9a;">
+                Fetches messages using offset pagination.
+            </p>
+            <label>
+                Limit:
+                <input type="number" id="limit" value="10" min="1" max="100" />
+            </label>
+            <label>
+                Offset:
+                <input type="number" id="offset" value="0" min="0" />
+            </label>
+            <button onclick="fetchMessages()">Fetch Messages</button>
+            <div id="fetch-results"></div>
+        </div>
+        
+        <!-- Test 2: Pagination -->
+        <div class="section">
+            <h2>Test 2: Navigate Pages</h2>
+            <p style="margin-bottom: 1rem; color: #8a8a9a;">
+                Use Next/Previous buttons to navigate through pages (10 per page).
+            </p>
+            <button onclick="fetchNextPage()" id="next-btn">Next Page →</button>
+            <button onclick="fetchPrevPage()" id="prev-btn" disabled>← Previous Page</button>
+            <div id="pagination-results"></div>
+        </div>
+        
+        <!-- Test 3: Submit Message -->
+        <div class="section">
+            <h2>Test 3: Submit New Message</h2>
+            <p style="margin-bottom: 1rem; color: #8a8a9a;">
+                Test the POST endpoint by submitting a new grief message.
+            </p>
+            <label>
+                Your Message (280 characters max):
+                <textarea id="message-content" maxlength="280" placeholder="What are you mourning?"></textarea>
+            </label>
+            <div class="char-count">
+                <span id="char-count">0</span> / 280 characters
+            </div>
+            <button onclick="submitMessage()">Submit Message</button>
+            <div id="submit-results"></div>
+        </div>
+        
+        <!-- Test 4: Database Stats -->
+        <div class="section">
+            <h2>Test 4: Database Statistics</h2>
+            <p style="margin-bottom: 1rem; color: #8a8a9a;">
+                Verify seed data was loaded correctly (should show 600 messages).
+            </p>
+            <button onclick="getStats()">Get Statistics</button>
+            <div id="stats-results"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/messages';
+        let currentOffset = 0;
+        let totalMessages = 0;
+        const pageSize = 10;
+        
+        // Character counter
+        document.getElementById('message-content').addEventListener('input', function() {
+            document.getElementById('char-count').textContent = this.value.length;
+        });
+        
+        async function checkServer() {
+            const statusDiv = document.getElementById('server-status');
+            statusDiv.innerHTML = '<div class="status info">Checking server...</div>';
+            
+            try {
+                const response = await fetch(API_BASE);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = `
+                        <div class="status success">✓ Server is running!</div>
+                        <div style="margin-top: 0.5rem; color: #8a8a9a;">
+                            Status: ${response.status} ${response.statusText}<br>
+                            Total messages in database: ${data.total}
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">✗ Server is not running</div>
+                    <div style="margin-top: 0.5rem; color: #ff6666;">
+                        ${error.message}
+                    </div>
+                    <div style="margin-top: 1rem; color: #8a8a9a;">
+                        Make sure to run: <code>npm run dev</code>
+                    </div>
+                `;
+            }
+        }
+        
+        async function fetchMessages() {
+            const limit = document.getElementById('limit').value;
+            const offset = document.getElementById('offset').value;
+            const resultsDiv = document.getElementById('fetch-results');
+            resultsDiv.innerHTML = '<div class="status info">Fetching messages...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}?limit=${limit}&offset=${offset}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch messages');
+                }
+                
+                totalMessages = data.total;
+                
+                resultsDiv.innerHTML = `
+                    <div class="status success">✓ Successfully fetched ${data.messages.length} messages</div>
+                    ${renderMessages(data.messages)}
+                    ${renderPaginationInfo(data)}
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">✗ Error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        async function fetchNextPage() {
+            currentOffset += pageSize;
+            await fetchPage();
+        }
+        
+        async function fetchPrevPage() {
+            currentOffset = Math.max(0, currentOffset - pageSize);
+            await fetchPage();
+        }
+        
+        async function fetchPage() {
+            const resultsDiv = document.getElementById('pagination-results');
+            resultsDiv.innerHTML = '<div class="status info">Fetching page...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}?limit=${pageSize}&offset=${currentOffset}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch messages');
+                }
+                
+                totalMessages = data.total;
+                updatePaginationButtons();
+                
+                const pageNum = Math.floor(currentOffset / pageSize) + 1;
+                const totalPages = Math.ceil(totalMessages / pageSize);
+                
+                resultsDiv.innerHTML = `
+                    <div class="status success">✓ Page ${pageNum} of ${totalPages} (${data.messages.length} messages)</div>
+                    ${renderMessages(data.messages)}
+                    ${renderPaginationInfo(data)}
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">✗ Error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function updatePaginationButtons() {
+            document.getElementById('prev-btn').disabled = currentOffset === 0;
+            document.getElementById('next-btn').disabled = currentOffset + pageSize >= totalMessages;
+        }
+        
+        async function submitMessage() {
+            const content = document.getElementById('message-content').value.trim();
+            const resultsDiv = document.getElementById('submit-results');
+            
+            if (!content) {
+                resultsDiv.innerHTML = '<div class="status error">✗ Please enter a message</div>';
+                return;
+            }
+            
+            if (content.length > 280) {
+                resultsDiv.innerHTML = '<div class="status error">✗ Message exceeds 280 characters</div>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = '<div class="status info">Submitting message...</div>';
+            
+            try {
+                const sessionId = 'test-' + Date.now();
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content,
+                        sessionId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to submit message');
+                }
+                
+                resultsDiv.innerHTML = `
+                    <div class="status success">✓ Message submitted successfully!</div>
+                    <div class="message-card" style="margin-top: 1rem;">
+                        <div class="message-content">${data.message.content}</div>
+                        <div class="message-meta">
+                            <span>ID: ${data.message.id}</span>
+                            <span>Created: ${new Date(data.message.created_at).toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Clear the form
+                document.getElementById('message-content').value = '';
+                document.getElementById('char-count').textContent = '0';
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">✗ Error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        async function getStats() {
+            const resultsDiv = document.getElementById('stats-results');
+            resultsDiv.innerHTML = '<div class="status info">Fetching statistics...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}?limit=1`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch statistics');
+                }
+                
+                const total = data.total;
+                
+                resultsDiv.innerHTML = `
+                    <div class="status success">✓ Database Statistics</div>
+                    <div class="results">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <div class="message-card">
+                                <div style="color: #a89080; font-weight: 600; margin-bottom: 0.5rem;">Total Messages</div>
+                                <div style="font-size: 2rem; color: #8b7355;">${total}</div>
+                            </div>
+                            <div class="message-card">
+                                <div style="color: #a89080; font-weight: 600; margin-bottom: 0.5rem;">Expected (Seed)</div>
+                                <div style="font-size: 2rem; color: #8b7355;">600</div>
+                            </div>
+                            <div class="message-card">
+                                <div style="color: #a89080; font-weight: 600; margin-bottom: 0.5rem;">Status</div>
+                                <div style="font-size: 1.5rem; color: ${total === 600 ? '#66ff66' : '#ff6666'};">
+                                    ${total === 600 ? '✓ Perfect' : '⚠ Check'}
+                                </div>
+                            </div>
+                        </div>
+                        ${total !== 600 ? `
+                            <div style="margin-top: 1rem; padding: 1rem; background: #4d1a1a; border-radius: 4px; color: #ff6666;">
+                                ⚠ Expected 600 messages but found ${total}. 
+                                ${total < 600 ? 'Seed data may not have loaded completely.' : 'There may be extra test messages.'}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">✗ Error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function renderMessages(messages) {
+            if (messages.length === 0) {
+                return '<div class="results"><p>No messages found.</p></div>';
+            }
+            
+            return `
+                <div class="results">
+                    ${messages.map(msg => `
+                        <div class="message-card">
+                            <div class="message-content">${msg.content}</div>
+                            <div class="message-meta">
+                                <span>ID: ${msg.id.substring(0, 8)}...</span>
+                                <span>${new Date(msg.created_at).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function renderPaginationInfo(data) {
+            const pageNum = Math.floor(data.offset / pageSize) + 1;
+            const totalPages = Math.ceil(data.total / pageSize);
+            
+            return `
+                <div class="pagination-info">
+                    <strong>Pagination Info:</strong>
+                    <div style="margin-top: 0.5rem; color: #8a8a9a;">
+                        <div>Total Messages: ${data.total}</div>
+                        <div>Current Page: ${pageNum} of ${totalPages}</div>
+                        <div>Showing: ${data.offset + 1} - ${Math.min(data.offset + data.limit, data.total)}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Auto-check server on load
+        window.addEventListener('load', () => {
+            checkServer();
+        });
+    </script>
+</body>
+</html>

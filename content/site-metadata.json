@@ -1,0 +1,23 @@
+{
+  "site": {
+    "title": "Requiary",
+    "description": "A contemplative space for collective witness of grief. Anonymous expressions of loss become luminous particles in a shared constellation.",
+    "url": "https://requiary.app",
+    "keywords": ["grief", "mourning", "contemplation", "interactive art", "memorial", "collective witness"],
+    "author": "Requiary",
+    "language": "en"
+  },
+  "contact": {
+    "email": "hello@requiary.app"
+  },
+  "social": {
+    "hashtag": "#Requiary",
+    "instagram": "",
+    "twitter": "",
+    "facebook": ""
+  },
+  "analytics": {
+    "vercel": true,
+    "plausible": false
+  }
+}
