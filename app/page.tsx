@@ -32,9 +32,13 @@ export default async function HomePage() {
         <div className="relative z-10 flex items-center min-h-[100dvh] md:min-h-[80vh] py-4">
           <div className="w-full max-w-6xl mx-auto px-6 md:px-12 py-12 md:py-40">
             <div className="space-y-5 md:space-y-10 animate-fade-in">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light tracking-tight leading-tight text-white drop-shadow-2xl italic">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light tracking-tight leading-tight text-white drop-shadow-2xl">
                 What are you mourning?
               </h1>
+
+              <p className="text-lg sm:text-xl md:text-2xl font-light leading-relaxed text-white/90 max-w-3xl">
+                Grief witnessed collectively.
+              </p>
 
               <div className="flex flex-col sm:flex-row items-start gap-4 pt-4">
                 <Link href="/participate" className="btn-primary">
