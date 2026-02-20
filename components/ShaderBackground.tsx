@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 const vertexShader = `
@@ -114,6 +114,14 @@ export function ShaderBackground() {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const sceneRef = useRef<THREE.Scene | null>(null)
   const materialRef = useRef<THREE.ShaderMaterial | null>(null)
+  const debugRef = useRef<HTMLDivElement>(null)
+  const [showDebug, setShowDebug] = useState(false)
+  
+  // Check for ?debug=true
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setShowDebug(params.get('debug') === 'true')
+  }, [])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -133,7 +141,8 @@ export function ShaderBackground() {
     renderer.setSize(window.innerWidth, window.innerHeight)
     // Reduce pixel ratio on mobile for better performance
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2))
+    const pixelRatio = isMobile ? 1 : Math.min(window.devicePixelRatio, 2)
+    renderer.setPixelRatio(pixelRatio)
     containerRef.current.appendChild(renderer.domElement)
 
     // Shader material with ISF parameters
@@ -191,23 +200,38 @@ export function ShaderBackground() {
       window.visualViewport.addEventListener('resize', handleResize)
     }
 
-    // Animation loop with frame rate limiting
+    // Animation loop - no frame rate limiting, let's see actual performance
     let animationFrameId: number
-    let lastFrameTime = 0
-    const targetFPS = 30 // Cap at 30fps for homepage - saves GPU
-    const frameInterval = 1000 / targetFPS
+    let frameCount = 0
+    let lastFpsUpdate = performance.now()
+    let currentFps = 0
     
     const animate = (currentTime: number) => {
       animationFrameId = requestAnimationFrame(animate)
       
-      // Frame rate limiting
-      const deltaTime = currentTime - lastFrameTime
-      if (deltaTime < frameInterval) return
-      lastFrameTime = currentTime - (deltaTime % frameInterval)
+      // FPS calculation
+      frameCount++
+      const elapsed = currentTime - lastFpsUpdate
+      if (elapsed >= 1000) {
+        currentFps = Math.round((frameCount * 1000) / elapsed)
+        frameCount = 0
+        lastFpsUpdate = currentTime
+        
+        // Update debug display if it exists
+        if (debugRef.current) {
+          const pr = renderer.getPixelRatio()
+          const resolution = `${Math.round(window.innerWidth * pr)}x${Math.round(window.innerHeight * pr)}`
+          debugRef.current.innerHTML = `
+            FPS: ${currentFps}<br>
+            Resolution: ${resolution}<br>
+            Pixel Ratio: ${pr}<br>
+            Device: ${isMobile ? 'Mobile' : 'Desktop'}
+          `
+        }
+      }
       
       if (!material || !renderer || !scene) return
       // Separate animation speeds: slower on desktop for contemplative feel, moderate on mobile
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
       material.uniforms.u_time.value += isMobile ? 0.0135 : 0.008
       renderer.render(scene, camera)
     }
@@ -237,22 +261,45 @@ export function ShaderBackground() {
   }, [])
 
   return (
-    <div 
-      ref={containerRef} 
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: -10,
-        overflow: 'hidden',
-        // Prevent any gaps during iOS viewport changes
-        transform: 'translateZ(0)',
-        WebkitTransform: 'translateZ(0)',
-      }}
-    />
+    <>
+      <div 
+        ref={containerRef} 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: -10,
+          overflow: 'hidden',
+          // Prevent any gaps during iOS viewport changes
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)',
+        }}
+      />
+      {showDebug && (
+        <div
+          ref={debugRef}
+          style={{
+            position: 'fixed',
+            top: '80px',
+            left: '16px',
+            padding: '12px 16px',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            color: '#fff',
+            fontFamily: 'monospace',
+            fontSize: '12px',
+            lineHeight: '1.6',
+            borderRadius: '4px',
+            zIndex: 9999,
+            pointerEvents: 'none',
+          }}
+        >
+          Loading...
+        </div>
+      )}
+    </>
   )
 }
