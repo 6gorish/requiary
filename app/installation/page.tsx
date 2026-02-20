@@ -27,6 +27,7 @@ import { SonificationService } from '@/lib/audio/sonification-service'
 import type { MessageCluster } from '@/lib/audio/types'
 import SoundControl from '@/components/SoundControl'
 import AudioDebugMixer from '@/components/AudioDebugMixer'
+import AboutModal from '@/components/AboutModal'
 
 const vertexShader = `
 attribute vec3 aPosition;
@@ -266,6 +267,7 @@ function ConnectionsTest() {
   
   // Check for ?debug=true URL parameter
   const [showDebug, setShowDebug] = useState(false)
+  const [showAboutModal, setShowAboutModal] = useState(false)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     setShowDebug(params.get('debug') === 'true')
@@ -1289,6 +1291,9 @@ function ConnectionsTest() {
       {/* Sound controls */}
       <SoundControl sonificationService={sonificationRef.current} />
 
+      {/* About modal */}
+      <AboutModal isOpen={showAboutModal} onClose={() => setShowAboutModal(false)} />
+
       {/* Audio debug mixer - only shown with ?debug=true */}
       <AudioDebugMixer sonificationService={sonificationRef.current} visible={showDebug} />
 
@@ -1306,8 +1311,8 @@ function ConnectionsTest() {
             Requiary
           </a>
           <div className="flex items-center gap-3 md:gap-6">
-            <a 
-              href="/about" 
+            <button 
+              onClick={() => setShowAboutModal(true)}
               className="text-white/60 hover:text-white transition-colors w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-full border border-white/30 hover:border-white/50 hover:bg-white/10"
               style={{ textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
               title="About"
@@ -1317,7 +1322,7 @@ function ConnectionsTest() {
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
                 <line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
-            </a>
+            </button>
             <a 
               href="/participate" 
               className="text-white/90 hover:text-white transition-colors text-xs md:text-sm px-3 py-1.5 md:px-4 md:py-2 rounded border border-white/30 hover:border-white/50 hover:bg-white/10"
