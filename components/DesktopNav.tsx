@@ -6,6 +6,9 @@ export default function DesktopNav() {
       <Link href="/about" className="nav-link">
         About
       </Link>
+      <Link href="/installation" className="nav-link">
+        Enter
+      </Link>
       <Link href="/participate" className="btn-primary">
         Share Your Grief
       </Link>

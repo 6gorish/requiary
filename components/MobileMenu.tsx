@@ -118,6 +118,22 @@ export default function MobileMenu() {
           </Link>
 
           <Link
+            href="/installation"
+            onClick={closeMenu}
+            style={{
+              display: 'block',
+              fontSize: '16px',
+              padding: '12px 16px',
+              color: pathname === '/installation' ? '#0c0a09' : '#57534e', // stone-900 : stone-600
+              textDecoration: 'none',
+              transition: 'color 200ms cubic-bezier(0.4, 0.0, 0.2, 1)',
+              fontWeight: pathname === '/installation' ? '500' : '400'
+            }}
+          >
+            Enter the Constellation
+          </Link>
+
+          <Link
             href="/participate"
             onClick={closeMenu}
             style={{

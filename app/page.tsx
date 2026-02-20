@@ -44,8 +44,18 @@ export default async function HomePage() {
                 <Link href="/participate" className="btn-primary">
                   Share Your Grief
                 </Link>
-                <Link href="/about" className="btn-secondary bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50">
-                  Learn More
+                <Link href="/installation" className="btn-secondary bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50">
+                  Enter the Constellation
+                </Link>
+              </div>
+              
+              {/* Secondary link */}
+              <div className="pt-2">
+                <Link 
+                  href="/about" 
+                  className="text-white/60 hover:text-white/90 text-sm font-light transition-colors"
+                >
+                  Learn more about Requiary →
                 </Link>
               </div>
             </div>

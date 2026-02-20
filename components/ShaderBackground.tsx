@@ -26,7 +26,7 @@ uniform float brightness;
 uniform vec3 color;
 uniform vec3 accent;
 
-#define NUM_OCTAVES 6
+#define NUM_OCTAVES 4
 
 mat3 rotX(float a) {
     float c = cos(a);
@@ -191,17 +191,27 @@ export function ShaderBackground() {
       window.visualViewport.addEventListener('resize', handleResize)
     }
 
-    // Animation loop
+    // Animation loop with frame rate limiting
     let animationFrameId: number
-    const animate = () => {
+    let lastFrameTime = 0
+    const targetFPS = 30 // Cap at 30fps for homepage - saves GPU
+    const frameInterval = 1000 / targetFPS
+    
+    const animate = (currentTime: number) => {
+      animationFrameId = requestAnimationFrame(animate)
+      
+      // Frame rate limiting
+      const deltaTime = currentTime - lastFrameTime
+      if (deltaTime < frameInterval) return
+      lastFrameTime = currentTime - (deltaTime % frameInterval)
+      
       if (!material || !renderer || !scene) return
       // Separate animation speeds: slower on desktop for contemplative feel, moderate on mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
       material.uniforms.u_time.value += isMobile ? 0.0135 : 0.008
       renderer.render(scene, camera)
-      animationFrameId = requestAnimationFrame(animate)
     }
-    animate()
+    animationFrameId = requestAnimationFrame(animate)
 
     // Cleanup
     return () => {

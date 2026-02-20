@@ -44,7 +44,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
       
       {/* Modal content */}
       <div 
-        className="relative z-10 w-full max-w-2xl max-h-[85vh] mx-4 overflow-y-auto"
+        className="relative z-10 w-full max-w-2xl max-h-[85vh] mx-4 overflow-y-auto modal-scrollbar"
         onClick={(e) => e.stopPropagation()}
         style={{
           animation: 'slideUp 0.3s ease-out',
@@ -154,7 +154,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
         </div>
       </div>
 
-      {/* Keyframe animations */}
+      {/* Keyframe animations and scrollbar styling */}
       <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; }
@@ -169,6 +169,28 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+      `}</style>
+      <style jsx global>{`
+        /* Custom scrollbar for the modal */
+        .modal-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .modal-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 4px;
+        }
+        .modal-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 4px;
+        }
+        .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.25);
+        }
+        /* Firefox */
+        .modal-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.05);
         }
       `}</style>
     </div>
