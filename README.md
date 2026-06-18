@@ -2,6 +2,8 @@
 
 A contemplative web application transforming anonymous grief messages into a luminous particle constellation with emergent sonification.
 
+**Live site: [requiary.org](https://www.requiary.org/)**
+
 ---
 
 ## The Vision
@@ -119,7 +121,7 @@ Add `?debug=true` to the installation URL to access:
 - **Database**: Supabase (PostgreSQL)
 - **Semantic AI**: Anthropic Claude API
 - **Styling**: Tailwind CSS
-- **Deployment**: Vercel
+- **Deployment**: Vercel ([requiary.org](https://www.requiary.org/))
 
 ---
 
