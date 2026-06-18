@@ -33,6 +33,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.requiary.org'),
   title: 'Requiary',
   description: 'A contemplative space for collective witness of grief. Anonymous expressions of loss become luminous particles in a shared constellation.',
   icons: {
