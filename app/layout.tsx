@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Requiary',
     description: 'Grief witnessed collectively. Anonymous expressions of loss become luminous particles in a shared constellation.',
-    url: 'https://requiary.app',
+    url: 'https://www.requiary.org',
     siteName: 'Requiary',
     images: [
       {
