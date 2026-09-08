@@ -22,21 +22,21 @@ The application combines:
 The system maintains strict separation between layers:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────┐
 │  PRESENTATION LAYER                                          │
-│  p5.js WEBGL • Particles • Connection Lines • Shaders       │
-│  Web Audio • Multi-layer Sonification • Semantic Mapping    │
-└───────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────────────────────────────────────┐
+│  p5.js WEBGL • Particles • Connection Lines • Shaders        │
+│  Web Audio • Multi-layer Sonification • Semantic Mapping     │
+└──────────────────────────────────────────────────────────────┘
+                               │
+┌──────────────────────────────────────────────────────────────┐
 │  BUSINESS LOGIC LAYER                                        │
-│  Working Set • Dual Cursors • Clustering • Priority Queue   │
-└───────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────────────────────────────────────┐
+│  Working Set • Dual Cursors • Clustering • Priority Queue    │
+└──────────────────────────────────────────────────────────────┘
+                               │
+┌──────────────────────────────────────────────────────────────┐
 │  DATA LAYER                                                  │
-│  PostgreSQL • Messages Table • Semantic Embeddings (Claude) │
-└───────────────────────────────────────────────────────────────┘
+│  PostgreSQL • Messages Table • Semantic Embeddings (Claude)  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
